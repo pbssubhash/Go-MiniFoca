@@ -23,6 +23,19 @@ It's a simple metadata parser for docx files, retrieved from search engine dorks
         Target website. Ex: tesla.com (default "Default")
 ```
 
+##### Usage of Parameters
+- Depth(depth): Number of pages to traverse inside the bing search engine
+- Destination (dest): A destination folder to store the files for processesing. It should be a writable folder.
+- Extension (ext): Extension to search using Bing. Currently tested on docx. Should work on xlsx and doc in theory.
+- Help (help): Print Help.
+- Target (target): What's the target organisation's website? Ex: tesla.com
+
+##### For the lazy ones
+```
+go run main.go
+./main --dest=C:\Users\User\Desktop\DownloadT\ --ext=docx --target=tesla.com --depth=2
+```
+
 ### Usage as a library 
 
 ```
