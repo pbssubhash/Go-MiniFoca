@@ -77,20 +77,24 @@ func Unzip(src string, destination string) ([]string, error) {
 		}
 		if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
 			fmt.Println(err.Error())
+			return nil, nil
 		}
 		outFile, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
 		if err != nil {
 			fmt.Println(err.Error())
+			return nil, nil
 		}
 		rc, err := f.Open()
 		if err != nil {
 			fmt.Println(err.Error())
+			return nil, nil
 		}
 		_, err = io.Copy(outFile, rc)
 		outFile.Close()
 		rc.Close()
 		if err != nil {
 			fmt.Println(err.Error())
+			return nil, nil
 		}
 
 	}
