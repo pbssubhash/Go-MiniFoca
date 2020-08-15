@@ -162,6 +162,9 @@ func ParseDoc(DestFolder string, ZipFile string) (map[string]string, map[string]
 	FullFileLoc := strings.Split(strings.TrimSuffix(ZipFile, path.Ext(ZipFile)), ".")[0]
 	fmt.Println(FullFileLoc)
 	ok := Unzip(ZipFile, FullFileLoc)
+	if ok != nil {
+		fmt.Println("ZIP Error")
+	}
 	appmap, ok := ParseXML(fmt.Sprintf("%s%sdocProps%score.xml", FullFileLoc, string(os.PathSeparator), string(os.PathSeparator)), "core")
 	if ok != nil {
 		log.Fatalf("Error - 2")
