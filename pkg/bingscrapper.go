@@ -8,14 +8,13 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 	"sync"
 
 	"github.com/gocolly/colly"
 )
 
 func DownloadDocument(url string, dest string, ext string, wg *sync.WaitGroup) {
-	splitter := strings.Split(url, "/")
+	// splitter := strings.Split(url, "/")
 	out, err := os.Create(dest + ext)
 	if err != nil {
 		log.Fatalf("Error-11")
