@@ -158,16 +158,17 @@ func ParseXML(file string, types string) (map[string]string, error) {
 }
 
 func ParseDoc(DestFolder string, ZipFile string) (map[string]string, map[string]string) {
-	fmt.Println(ZipFile)
-	fmt.Println(DestFolder)
-	fmt.Println(DestFolder + strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile))))
-	fmt.Println(strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile))))
-	Unzip(ZipFile, DestFolder+strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile))))
-	appmap, ok := ParseXML(fmt.Sprintf("%s/docProps/core.xml", strings.Split(filepath.Base(ZipFile), ".")[0]), "core")
+	// fmt.Println(ZipFile)
+	// fmt.Println(DestFolder)
+	// fmt.Println(DestFolder + strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile))))
+	// fmt.Println(strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile))))
+	FullFileLoc := strings.TrimSuffix(ZipFile, path.Ext(ZipFile))
+	Unzip(ZipFile, FullFileLoc)
+	appmap, ok := ParseXML(fmt.Sprintf("%s/docProps/core.xml", FullFileLoc), "core")
 	if ok != nil {
 		log.Fatalf("Error - 2")
 	}
-	coremap, ok := ParseXML(fmt.Sprintf("%s/docProps/app.xml", strings.Split(filepath.Base(ZipFile), ".")[0]), "app")
+	coremap, ok := ParseXML(fmt.Sprintf("%s/docProps/app.xml", FullFileLoc), "app")
 	if ok != nil {
 		log.Fatalf("Error - 3")
 	}
