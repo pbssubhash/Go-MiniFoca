@@ -14,7 +14,7 @@ import (
 
 func DownloadDocument(url string, dest string, ext string, wg *sync.WaitGroup) {
 	splitter := strings.Split(url, "/")
-	out, err := os.Create(dest + `\` + splitter[len(splitter)-1] + "." + ext)
+	out, err := os.Create(dest + string(os.PathSeparator) + splitter[len(splitter)-1] + "." + ext)
 	if err != nil {
 		log.Fatalf("Error-11")
 	}
