@@ -59,7 +59,7 @@ func checkError(ok error) {
 	}
 }
 
-func Unzip(src string, dest string) error {
+func Unzip(src string, destination string) ([]string, error) {
 	r, err := zip.OpenReader(src)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -68,7 +68,7 @@ func Unzip(src string, dest string) error {
 	for _, f := range r.File {
 		fpath := filepath.Join(destination, f.Name)
 		if !strings.HasPrefix(fpath, filepath.Clean(destination)+string(os.PathSeparator)) {
-			return filenames, fmt.Errorf("%s is an illegal filepath", fpath)
+			return nil, fmt.Errorf("%s is an illegal filepath", fpath)
 		}
 		// filenames = append(filenames, fpath)
 		if f.FileInfo().IsDir() {
