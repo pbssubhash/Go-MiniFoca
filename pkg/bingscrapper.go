@@ -44,8 +44,8 @@ func Scrap(website string, extension string, pages int, dest string) (map[string
 		// splitter := strings.Split(e.Attr("href"), "/")
 		algorithm := md5.New()
 		algorithm.Write([]byte(e.Attr("href")))
-		result[dest+string(os.PathSeparator)+string(hex.EncodeToString(algorithm.Sum(nil)))] = e.Attr("href")
-		go DownloadDocument(e.Attr("href"), dest, string(hex.EncodeToString(algorithm.Sum(nil))), &wg)
+		result[dest+string(os.PathSeparator)+string(hex.EncodeToString(algorithm.Sum(nil)))+".zip"] = e.Attr("href")
+		go DownloadDocument(e.Attr("href"), dest, string(hex.EncodeToString(algorithm.Sum(nil))+".zip"), &wg)
 		wg.Add(1)
 	})
 	count := 0
