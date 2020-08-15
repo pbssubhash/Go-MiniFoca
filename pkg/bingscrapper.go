@@ -16,16 +16,16 @@ func DownloadDocument(url string, dest string, ext string, wg *sync.WaitGroup) {
 	splitter := strings.Split(url, "/")
 	out, err := os.Create(dest + `\` + splitter[len(splitter)-1] + "." + ext)
 	if err != nil {
-		log.Fatalf("Error")
+		log.Fatalf("Error-11")
 	}
 	defer out.Close()
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatalf("Error")
+		log.Fatalf("Error-12")
 	}
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
-		log.Fatalf("Error")
+		log.Fatalf("Error-13")
 	}
 	wg.Done()
 }
