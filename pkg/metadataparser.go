@@ -106,6 +106,7 @@ func ParseXML(file string, types string) (map[string]string, error) {
 	xmlReader, ok := os.Open(file)
 	if ok != nil {
 		log.Fatalf("Error-1")
+		return nil, nil
 	}
 	content, _ := ioutil.ReadAll(xmlReader)
 	// fmt.Println(string(content))
