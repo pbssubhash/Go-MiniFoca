@@ -92,8 +92,9 @@ func Unzip(src string, destination string) ([]string, error) {
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		return nil, nil
+
 	}
+	return nil, nil
 }
 func ParseXML(file string, types string) (map[string]string, error) {
 	fmt.Println(file)
