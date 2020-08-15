@@ -157,10 +157,6 @@ func ParseXML(file string, types string) (map[string]string, error) {
 }
 
 func ParseDoc(DestFolder string, ZipFile string) (map[string]string, map[string]string) {
-	// var DestFolder string
-	// var ZipFile string
-	// DestFolder = os.Args[2]
-	// ZipFile = os.Args[1]
 	Unzip(ZipFile, DestFolder)
 	appmap, ok := ParseXML(fmt.Sprintf("%s/%s/docProps/core.xml", DestFolder, strings.Split(filepath.Base(ZipFile), ".")[0]), "core")
 	if ok != nil {
