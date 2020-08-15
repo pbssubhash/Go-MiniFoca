@@ -62,7 +62,6 @@ func checkError(ok error) {
 // Taken from https://stackoverflow.com/a/58192644
 func Unzip(src, dest string) error {
 	dest = filepath.Clean(dest) + string(os.PathSeparator)
-
 	r, err := zip.OpenReader(src)
 	if err != nil {
 		return err
@@ -72,9 +71,7 @@ func Unzip(src, dest string) error {
 			panic(err)
 		}
 	}()
-
 	os.MkdirAll(dest, 0755)
-
 	// Closure to address file descriptors issue with all the deferred .Close() methods
 	extractAndWriteFile := func(f *zip.File) error {
 		path := filepath.Join(dest, f.Name)
@@ -165,11 +162,11 @@ func ParseDoc(DestFolder string, ZipFile string) (map[string]string, map[string]
 	FullFileLoc := strings.TrimSuffix(ZipFile, path.Ext(ZipFile))
 	fmt.Println(FullFileLoc)
 	Unzip(ZipFile, FullFileLoc)
-	appmap, ok := ParseXML(fmt.Sprintf("%s/docProps/core.xml", FullFileLoc), "core")
+	appmap, ok := ParseXML(fmt.Sprintf("%s%sdocProps%score.xml", FullFileLoc, string(os.PathSeparator), string(os.PathSeparator)), "core")
 	if ok != nil {
 		log.Fatalf("Error - 2")
 	}
-	coremap, ok := ParseXML(fmt.Sprintf("%s/docProps/app.xml", FullFileLoc), "app")
+	coremap, ok := ParseXML(fmt.Sprintf("%s%sdocProps%sapp.xml", FullFileLoc, string(os.PathSeparator), string(os.PathSeparator)), "app")
 	if ok != nil {
 		log.Fatalf("Error - 3")
 	}
