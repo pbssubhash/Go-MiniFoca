@@ -30,15 +30,18 @@ func DownloadDocument(url string, dest string, ext string, wg *sync.WaitGroup) {
 	wg.Done()
 }
 
-func Scrap(website string, extension string, pages int, dest string) error {
+func Scrap(website string, extension string, pages int, dest string) (map[string]string, error) {
 	var wg sync.WaitGroup
 	c := colly.NewCollector()
+	result := make(map[string]string, 0)
 	// website := os.Args[1]
 	// extension := os.Args[2]
 	// pages, _ := strconv.Atoi(os.Args[3])
 	// dest := os.Args[4]
 	c.OnHTML("#b_results li:nth-child(n)  h2  a", func(e *colly.HTMLElement) {
 		go DownloadDocument(e.Attr("href"), dest, extension, &wg)
+		splitter := strings.Split(e.Attr("href"), "/")
+		result[dest+`\`+splitter[len(splitter)-1]+"."+extension] = e.Attr("href")
 		wg.Add(1)
 	})
 	count := 0
@@ -50,5 +53,5 @@ func Scrap(website string, extension string, pages int, dest string) error {
 		}
 	}
 	wg.Wait()
-	return nil
+	return result, nil
 }
