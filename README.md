@@ -1,5 +1,9 @@
 # Go-MiniFoca
 
+### What is it? 
+
+It's a simple metadata parser for docx files, retrieved from search engine dorks. It's a simple tool written to be a faster replacement for *some* functions of FOCA.
+
 ### Usage 
 
 ```
