@@ -102,36 +102,40 @@ func Unzip(src string, destination string) ([]string, error) {
 	return nil, nil
 }
 func ParseXML(file string, types string) (map[string]string, error) {
-	fmt.Println(file)
-	xmlReader, ok := os.Open(file)
-	if ok != nil {
-		log.Fatalf("Error-1")
+	// fmt.Println(file)
+	if _, err := os.Stat(file); err != nil {
 		return nil, nil
-	}
-	content, _ := ioutil.ReadAll(xmlReader)
-	// fmt.Println(string(content))
-	switch types {
-	case "app":
-		var App *Properties
-		xml.Unmarshal([]byte(content), &App)
-		return map[string]string{
-			"Title":       App.HeadingPairs.Vector.Variant[0].Lpstr,
-			"Application": fmt.Sprintf("%s %s", App.Application, App.AppVersion),
-			"Words":       App.Words,
-			"Company":     App.Company,
-			"Pages":       App.Pages,
-			"Template":    App.Template}, nil
-	case "core":
-		var App *CoreProperties
-		xml.Unmarshal([]byte(content), &App)
-		return map[string]string{
-			"CreatedBy":    App.Creator,
-			"CreatedTime":  App.Created.Text,
-			"ModifiedTime": App.Modified.Text,
-			"Description":  App.Description,
-			"Keywords":     App.Keywords}, nil
-	default:
-		return nil, nil
+	} else {
+		xmlReader, ok := os.Open(file)
+		if ok != nil {
+			log.Fatalf("Error-1")
+			return nil, nil
+		}
+		content, _ := ioutil.ReadAll(xmlReader)
+		// fmt.Println(string(content))
+		switch types {
+		case "app":
+			var App *Properties
+			xml.Unmarshal([]byte(content), &App)
+			return map[string]string{
+				"Title":       App.HeadingPairs.Vector.Variant[0].Lpstr,
+				"Application": fmt.Sprintf("%s %s", App.Application, App.AppVersion),
+				"Words":       App.Words,
+				"Company":     App.Company,
+				"Pages":       App.Pages,
+				"Template":    App.Template}, nil
+		case "core":
+			var App *CoreProperties
+			xml.Unmarshal([]byte(content), &App)
+			return map[string]string{
+				"CreatedBy":    App.Creator,
+				"CreatedTime":  App.Created.Text,
+				"ModifiedTime": App.Modified.Text,
+				"Description":  App.Description,
+				"Keywords":     App.Keywords}, nil
+		default:
+			return nil, nil
+		}
 	}
 }
 
@@ -150,10 +154,12 @@ func ParseDoc(DestFolder string, ZipFile string) (map[string]string, map[string]
 	appmap, ok := ParseXML(fmt.Sprintf("%s%sdocProps%score.xml", FullFileLoc, string(os.PathSeparator), string(os.PathSeparator)), "core")
 	if ok != nil {
 		log.Fatalf("Error - 2")
+		return nil, nil
 	}
 	coremap, ok := ParseXML(fmt.Sprintf("%s%sdocProps%sapp.xml", FullFileLoc, string(os.PathSeparator), string(os.PathSeparator)), "app")
 	if ok != nil {
 		log.Fatalf("Error - 3")
+		return nil, nil
 	}
 	return appmap, coremap
 }
