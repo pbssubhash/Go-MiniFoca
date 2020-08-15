@@ -157,7 +157,7 @@ func ParseXML(file string, types string) (map[string]string, error) {
 }
 
 func ParseDoc(DestFolder string, ZipFile string) (map[string]string, map[string]string) {
-	Unzip(ZipFile, DestFolder)
+	Unzip(ZipFile, DestFolder+strings.Split(filepath.Base(ZipFile), ".")[0])
 	appmap, ok := ParseXML(fmt.Sprintf("%s/%s/docProps/core.xml", DestFolder, strings.Split(filepath.Base(ZipFile), ".")[0]), "core")
 	if ok != nil {
 		log.Fatalf("Error - 2")
