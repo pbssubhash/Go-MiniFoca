@@ -27,7 +27,14 @@ func main() {
 		log.Fatalf("Error with Scrap function")
 	}
 	for file, _ := range result {
-		// fmt.Println(file)
-		fmt.Println(GoMiniFoca.ParseDoc(*Dest, file))
+		app, appx := GoMiniFoca.ParseDoc(*Dest, file)
+		for key, value := range app {
+			fmt.Printf(key + ":")
+			fmt.Println(value)
+		}
+		for key, value := range appx {
+			fmt.Printf(key + ":")
+			fmt.Println(value)
+		}
 	}
 }
