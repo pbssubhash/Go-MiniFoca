@@ -4,12 +4,10 @@ import (
 	"archive/zip"
 	"encoding/xml"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
 )
 
@@ -59,67 +57,40 @@ func checkError(ok error) {
 	}
 }
 
-// Taken from https://stackoverflow.com/a/58192644
-func Unzip(src, dest string) error {
-	dest = filepath.Clean(dest) + string(os.PathSeparator)
+func Unzip(src string, dest string) error {
 	r, err := zip.OpenReader(src)
 	if err != nil {
-		return err
+		fmt.Println(err.Error())
 	}
-	defer func() {
-		if err := r.Close(); err != nil {
-			panic(err)
+	defer r.Close()
+	for _, f := range r.File { 
+		fpath := filepath.Join(destination, f.Name)
+		if !strings.HasPrefix(fpath, filepath.Clean(destination)+string(os.PathSeparator)){ 
+            return filenames, fmt.Errorf("%s is an illegal filepath", fpath) 
 		}
-	}()
-	os.MkdirAll(dest, 0755)
-	// Closure to address file descriptors issue with all the deferred .Close() methods
-	extractAndWriteFile := func(f *zip.File) error {
-		path := filepath.Join(dest, f.Name)
-		// Check for ZipSlip: https://snyk.io/research/zip-slip-vulnerability
-		if !strings.HasPrefix(path, dest) {
-			return fmt.Errorf("%s: illegal file path", path)
+		// filenames = append(filenames, fpath)
+		if f.FileInfo().IsDir() { 
+			os.MkdirAll(fpath, os.ModePerm)
+			continue
 		}
-
-		rc, err := f.Open()
-		if err != nil {
-			return err
+		if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil { 
+			fmt.Println(err.Error()) 
 		}
-		defer func() {
-			if err := rc.Close(); err != nil {
-				panic(err)
-			}
-		}()
-
-		if f.FileInfo().IsDir() {
-			os.MkdirAll(path, f.Mode())
-		} else {
-			os.MkdirAll(filepath.Dir(path), f.Mode())
-			f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-			if err != nil {
-				return err
-			}
-			defer func() {
-				if err := f.Close(); err != nil {
-					panic(err)
-				}
-			}()
-
-			_, err = io.Copy(f, rc)
-			if err != nil {
-				return err
-			}
+		outFile, err := os.OpenFile(fpath,os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+		if err!=nil{
+			fmt.Println(err.Error())
 		}
-		return nil
-	}
-
-	for _, f := range r.File {
-		err := extractAndWriteFile(f)
-		if err != nil {
-			return err
+		rc, err := f.Open() 
+		if err != nil { 
+			fmt.Println(err.Error())
 		}
-	}
-
-	return nil
+		_, err = io.Copy(outFile, rc)
+		outFile.Close()
+		rc.Close()
+		if err!=nil{
+			fmt.Println(err.Error())
+		}
+		return nil,nil
 }
 func ParseXML(file string, types string) (map[string]string, error) {
 	fmt.Println(file)
@@ -161,7 +132,7 @@ func ParseDoc(DestFolder string, ZipFile string) (map[string]string, map[string]
 	// fmt.Println(strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile))))
 	FullFileLoc := strings.Split(strings.TrimSuffix(ZipFile, path.Ext(ZipFile)), ".")[0]
 	fmt.Println(FullFileLoc)
-	ok := Unzip(ZipFile, FullFileLoc)
+	_,ok := Unzip(ZipFile, FullFileLoc)
 	if ok != nil {
 		fmt.Println(string(ok.Error()))
 	}
