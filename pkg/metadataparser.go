@@ -163,6 +163,7 @@ func ParseDoc(DestFolder string, ZipFile string) (map[string]string, map[string]
 	// fmt.Println(DestFolder + strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile))))
 	// fmt.Println(strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile))))
 	FullFileLoc := strings.TrimSuffix(ZipFile, path.Ext(ZipFile))
+	fmt.Println(FullFileLoc)
 	Unzip(ZipFile, FullFileLoc)
 	appmap, ok := ParseXML(fmt.Sprintf("%s/docProps/core.xml", FullFileLoc), "core")
 	if ok != nil {
