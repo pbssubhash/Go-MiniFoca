@@ -4,10 +4,12 @@ import (
 	"archive/zip"
 	"encoding/xml"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -63,34 +65,35 @@ func Unzip(src string, dest string) error {
 		fmt.Println(err.Error())
 	}
 	defer r.Close()
-	for _, f := range r.File { 
+	for _, f := range r.File {
 		fpath := filepath.Join(destination, f.Name)
-		if !strings.HasPrefix(fpath, filepath.Clean(destination)+string(os.PathSeparator)){ 
-            return filenames, fmt.Errorf("%s is an illegal filepath", fpath) 
+		if !strings.HasPrefix(fpath, filepath.Clean(destination)+string(os.PathSeparator)) {
+			return filenames, fmt.Errorf("%s is an illegal filepath", fpath)
 		}
 		// filenames = append(filenames, fpath)
-		if f.FileInfo().IsDir() { 
+		if f.FileInfo().IsDir() {
 			os.MkdirAll(fpath, os.ModePerm)
 			continue
 		}
-		if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil { 
-			fmt.Println(err.Error()) 
-		}
-		outFile, err := os.OpenFile(fpath,os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-		if err!=nil{
+		if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
 			fmt.Println(err.Error())
 		}
-		rc, err := f.Open() 
-		if err != nil { 
+		outFile, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		rc, err := f.Open()
+		if err != nil {
 			fmt.Println(err.Error())
 		}
 		_, err = io.Copy(outFile, rc)
 		outFile.Close()
 		rc.Close()
-		if err!=nil{
+		if err != nil {
 			fmt.Println(err.Error())
 		}
-		return nil,nil
+		return nil, nil
+	}
 }
 func ParseXML(file string, types string) (map[string]string, error) {
 	fmt.Println(file)
@@ -132,7 +135,7 @@ func ParseDoc(DestFolder string, ZipFile string) (map[string]string, map[string]
 	// fmt.Println(strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile))))
 	FullFileLoc := strings.Split(strings.TrimSuffix(ZipFile, path.Ext(ZipFile)), ".")[0]
 	fmt.Println(FullFileLoc)
-	_,ok := Unzip(ZipFile, FullFileLoc)
+	_, ok := Unzip(ZipFile, FullFileLoc)
 	if ok != nil {
 		fmt.Println(string(ok.Error()))
 	}
