@@ -63,6 +63,7 @@ func Unzip(src string, destination string) ([]string, error) {
 	r, err := zip.OpenReader(src)
 	if err != nil {
 		fmt.Println(err.Error())
+		return nil, nil
 	}
 	defer r.Close()
 	for _, f := range r.File {
