@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -157,12 +158,12 @@ func ParseXML(file string, types string) (map[string]string, error) {
 }
 
 func ParseDoc(DestFolder string, ZipFile string) (map[string]string, map[string]string) {
-	Unzip(ZipFile, DestFolder+strings.Split(filepath.Base(ZipFile), ".")[0])
-	appmap, ok := ParseXML(fmt.Sprintf("%s/%s/docProps/core.xml", DestFolder, strings.Split(filepath.Base(ZipFile), ".")[0]), "core")
+	Unzip(ZipFile, DestFolder+strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile))))
+	appmap, ok := ParseXML(fmt.Sprintf("%s/%s/docProps/core.xml", DestFolder, strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile)))), "core")
 	if ok != nil {
 		log.Fatalf("Error - 2")
 	}
-	coremap, ok := ParseXML(fmt.Sprintf("%s/%s/docProps/app.xml", DestFolder, strings.Split(filepath.Base(ZipFile), ".")[0]), "app")
+	coremap, ok := ParseXML(fmt.Sprintf("%s/%s/docProps/app.xml", DestFolder, strings.TrimSuffix(path.Base(ZipFile), path.Ext(path.Base(ZipFile)))), "app")
 	if ok != nil {
 		log.Fatalf("Error - 3")
 	}
