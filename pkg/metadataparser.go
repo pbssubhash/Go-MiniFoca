@@ -139,6 +139,7 @@ func ParseDoc(DestFolder string, ZipFile string) (map[string]string, map[string]
 	_, ok := Unzip(ZipFile, FullFileLoc)
 	if ok != nil {
 		fmt.Println(string(ok.Error()))
+		return nil, nil
 	}
 	appmap, ok := ParseXML(fmt.Sprintf("%s%sdocProps%score.xml", FullFileLoc, string(os.PathSeparator), string(os.PathSeparator)), "core")
 	if ok != nil {
