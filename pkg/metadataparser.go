@@ -124,6 +124,7 @@ func Unzip(src, dest string) error {
 	return nil
 }
 func ParseXML(file string, types string) (map[string]string, error) {
+	fmt.Println(file)
 	xmlReader, ok := os.Open(file)
 	if ok != nil {
 		log.Fatalf("Error-1")
