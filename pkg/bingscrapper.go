@@ -1,6 +1,8 @@
 package GoMiniFoca
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"io"
 	"log"
 	"net/http"
@@ -14,7 +16,7 @@ import (
 
 func DownloadDocument(url string, dest string, ext string, wg *sync.WaitGroup) {
 	splitter := strings.Split(url, "/")
-	out, err := os.Create(dest + string(os.PathSeparator) + splitter[len(splitter)-1] + "." + ext)
+	out, err := os.Create(dest + ext)
 	if err != nil {
 		log.Fatalf("Error-11")
 	}
@@ -39,9 +41,12 @@ func Scrap(website string, extension string, pages int, dest string) (map[string
 	// pages, _ := strconv.Atoi(os.Args[3])
 	// dest := os.Args[4]
 	c.OnHTML("#b_results li:nth-child(n)  h2  a", func(e *colly.HTMLElement) {
-		go DownloadDocument(e.Attr("href"), dest, extension, &wg)
-		splitter := strings.Split(e.Attr("href"), "/")
-		result[dest+`\`+splitter[len(splitter)-1]+"."+extension] = e.Attr("href")
+
+		// splitter := strings.Split(e.Attr("href"), "/")
+		algorithm := md5.New()
+		algorithm.Write([]byte(e.Attr("href")))
+		result[dest+string(os.PathSeparator)+string(hex.EncodeToString(algorithm.Sum(nil)))] = e.Attr("href")
+		go DownloadDocument(e.Attr("href"), dest, string(hex.EncodeToString(algorithm.Sum(nil))), &wg)
 		wg.Add(1)
 	})
 	count := 0
