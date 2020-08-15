@@ -46,11 +46,11 @@ func Scrap(website string, extension string, pages int, dest string) (map[string
 	})
 	count := 0
 	for {
-		count = count + 1
 		c.Visit(`https://www.bing.com/search?q=site:` + website + `%20filetype:` + extension + `&first=` + strconv.Itoa((count*10)+1))
 		if count >= pages {
 			break
 		}
+		count = count + 1
 	}
 	wg.Wait()
 	return result, nil
