@@ -30,13 +30,13 @@ func DownloadDocument(url string, dest string, ext string, wg *sync.WaitGroup) {
 	wg.Done()
 }
 
-func main() {
+func Scrap(website string, extension string, pages int, dest string) error {
 	var wg sync.WaitGroup
 	c := colly.NewCollector()
-	website := os.Args[1]
-	extension := os.Args[2]
-	pages, _ := strconv.Atoi(os.Args[3])
-	dest := os.Args[4]
+	// website := os.Args[1]
+	// extension := os.Args[2]
+	// pages, _ := strconv.Atoi(os.Args[3])
+	// dest := os.Args[4]
 	c.OnHTML("#b_results li:nth-child(n)  h2  a", func(e *colly.HTMLElement) {
 		go DownloadDocument(e.Attr("href"), dest, extension, &wg)
 		wg.Add(1)
@@ -50,4 +50,5 @@ func main() {
 		}
 	}
 	wg.Wait()
+	return nil
 }
